@@ -14,59 +14,59 @@ player.speed = 2
 player.moving = false
 
 function move()
-	player.moving = true
+  player.moving = true
 	
-	if btn(0) then
-	  player.step += 1
-	 if(player.step%6==0) player.sprite+=2
- 	if(player.sprite>2) player.sprite=0
-	end
+  if btn(0) then
+    player.step += 1
+    if(player.step%6==0) player.sprite+=2
+	if(player.sprite>2) player.sprite=0
+  end
 	
-	if btn(1) then
-	  player.step += 1
-  if(player.step%6==0) player.sprite+=2
-  if(player.sprite>2) player.sprite=0
-	end
+  if btn(1) then
+    player.step += 1
+	if(player.step%6==0) player.sprite+=2
+	if(player.sprite>2) player.sprite=0
+  end
 	
-	if btn(2) then
-	player.sprite = 6
-	end
+  if btn(2) then
+    player.sprite = 6
+  end
 	
-	if btn(3) then
-	player.sprite = 8
-	end
+  if btn(3) then
+    player.sprite = 8
+  end
 end
 
 function _update()
-	player.moving = false
+  player.moving = false
 
-	if btn(0) then
-		direction = 0
-		player.x -= player.speed
-		move()
-	end
-	if btn(1) then
-		direction = 1
-		player.x += player.speed
-		move()
-	end
-	if btn(2) then
-		player.y -= player.speed
-		move()
-	end
-	if btn(3) then
-		player.y += player.speed
-		move()
-	end
+  if btn(0) then
+    direction = 0
+	player.x -= player.speed
+	move()
+  end
+  if btn(1) then
+    direction = 1
+	player.x += player.speed
+	move()
+  end
+  if btn(2) then
+    player.y -= player.speed
+	move()
+  end
+  if btn(3) then
+    player.y += player.speed
+	move()
+  end
 	
-	if not player.moving then
-		player.sprite = 4
-	end
+  if not player.moving then
+    player.sprite = 4
+  end
 end
 
 function _draw()
-	cls()
-	spr(player.sprite, player.x, player.y, 2, 2, (direction==0))
+  cls()
+  spr(player.sprite, player.x, player.y, 2, 2, (direction==0))
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000004400000000000000000000000000000000000000000000000000000000000000000000000
