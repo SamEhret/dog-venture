@@ -5,19 +5,23 @@ __lua__
 -- sam ehret
 
 gravity = 9.81 / 30
+friction = 5
 
 screen = {}
 screen.width = 128
 screen.height = 128
 
 player = {}
-player.x = 5
-player.y = 5
 player.width = 16
 player.height = 16
+player.x = 0
+player.y = screen.height - player.height
 player.sprite = 0
 player.step = 0
 player.direction = 1
+player.airborn = false
+player.acceleration = 2
+player.jump = 6
 player.max_speed = 2
 player.speed = {}
 player.speed.x = 0
@@ -39,24 +43,25 @@ function _update()
 
   if btn(0) then
     player.direction = 0
-	player.x -= player.max_speed
+	player.speed.x -= player.acceleration
     animate_move()
 	move()
   end
   if btn(1) then
     player.direction = 1
-	player.x += player.max_speed
+	player.speed.x += player.acceleration
     animate_move()
 	move()
   end
-  if btn(2) then
-    player.y -= player.max_speed
+  if btn(2) and not player.airborn then
+    player.airborn = true
+    player.speed.y = player.jump * -1
 	player.step = 0
     player.sprite = 6
 	move()
   end
   if btn(3) then
-    player.y += player.max_speed
+    player.speed.y += player.acceleration
     player.step = 0
     player.sprite = 8
 	move()
@@ -70,7 +75,18 @@ function _update()
   --apply gravity
   player.speed.y += gravity
 
+  --apply friction
+  if not player.airborn and not btn(0) and not btn(1) then
+   player.speed.x /= friction
+  end
+
   --apply player motion
+  if player.speed.x > player.max_speed then
+    player.speed.x = player.max_speed
+  end
+  if player.speed.x < player.max_speed * -1 then
+    player.speed.x = player.max_speed * -1
+  end
   player.x += player.speed.x
   player.y += player.speed.y
 
@@ -87,6 +103,12 @@ function _update()
   if player.y + player.height > screen.height then
     player.y = screen.height - player.height
 	player.speed.y = 0
+	player.airborn = false
+  end
+
+  --jump animation
+  if player.airborn == true then
+    player.sprite = 6
   end
 end
 
