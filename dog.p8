@@ -20,6 +20,7 @@ world_bg.width = 16
 world_bg.height = 16
 world_bg.pixel_width = world_bg.width * 8
 world_bg.pixel_height = world_bg.height * 8
+world_bg.paralax = 8
 
 mountain_bg = {}
 mountain_bg.mapsheet = {}
@@ -29,6 +30,7 @@ mountain_bg.width = 64
 mountain_bg.height = 16
 mountain_bg.pixel_width = mountain_bg.width * 8
 mountain_bg.pixel_height = mountain_bg.height * 8
+mountain_bg.paralax = 4
 
 cloud_bg = {}
 cloud_bg.mapsheet = {}
@@ -38,6 +40,7 @@ cloud_bg.width = 16
 cloud_bg.height = 16
 cloud_bg.pixel_width = cloud_bg.width * 8
 cloud_bg.pixel_height = cloud_bg.height * 8
+cloud_bg.paralax = 12
 
 player = {}
 player.width = 16
@@ -154,15 +157,15 @@ end
 
 function _draw()
   cls()
-  camera(paralax(camerax, world_bg.pixel_width, 8), 0)
+  camera(paralax(camerax, world_bg.pixel_width, world_bg.paralax), 0)
   draw_map(world_bg, 0, 0)
   draw_map(world_bg, world_bg.pixel_width, 0)
  
-  camera(paralax(camerax, cloud_bg.pixel_width, 12), 0)
+  camera(paralax(camerax, cloud_bg.pixel_width, cloud_bg.paralax), 0)
   draw_map(cloud_bg, 0, 0)
   draw_map(cloud_bg, cloud_bg.pixel_width, 0)
 
-  camera(paralax(camerax, mountain_bg.pixel_width, 4), 0)
+  camera(paralax(camerax, mountain_bg.pixel_width, mountain_bg.paralax), 0)
   draw_map(mountain_bg, 0, 0)
   draw_map(mountain_bg, mountain_bg.pixel_width, 0)
  
