@@ -7,11 +7,17 @@ __lua__
 player = {}
 player.x = 5
 player.y = 5
+player.width = 16
+player.height = 16
 player.sprite = 0
 player.step = 0
 player.direction = 1
 player.speed = 2
 player.moving = false
+
+screen = {}
+screen.width = 128
+screen.height = 128
 
 function move()
   player.moving = true
@@ -54,6 +60,20 @@ function _update()
   if not player.moving then
     player.step = 0
     player.sprite = 4
+  end
+
+  --checking player position against screen bounds
+  if player.x < 0 then
+    player.x = 0
+  end
+  if player.x + player.width > screen.width then
+    player.x = screen.width - player.width
+  end
+  if player.y < 0 then
+    player.y = 0
+  end
+  if player.y + player.height > screen.height then
+    player.y = screen.height - player.height
   end
 end
 
