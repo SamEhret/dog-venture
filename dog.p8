@@ -4,6 +4,12 @@ __lua__
 -- dog
 -- sam ehret
 
+gravity = 9.81 / 30
+
+screen = {}
+screen.width = 128
+screen.height = 128
+
 player = {}
 player.x = 5
 player.y = 5
@@ -12,12 +18,11 @@ player.height = 16
 player.sprite = 0
 player.step = 0
 player.direction = 1
-player.speed = 2
+player.max_speed = 2
+player.speed = {}
+player.speed.x = 0
+player.speed.y = 0
 player.moving = false
-
-screen = {}
-screen.width = 128
-screen.height = 128
 
 function move()
   player.moving = true
@@ -34,24 +39,24 @@ function _update()
 
   if btn(0) then
     player.direction = 0
-	player.x -= player.speed
+	player.x -= player.max_speed
     animate_move()
 	move()
   end
   if btn(1) then
     player.direction = 1
-	player.x += player.speed
+	player.x += player.max_speed
     animate_move()
 	move()
   end
   if btn(2) then
-    player.y -= player.speed
+    player.y -= player.max_speed
 	player.step = 0
     player.sprite = 6
 	move()
   end
   if btn(3) then
-    player.y += player.speed
+    player.y += player.max_speed
     player.step = 0
     player.sprite = 8
 	move()
@@ -61,6 +66,13 @@ function _update()
     player.step = 0
     player.sprite = 4
   end
+
+  --apply gravity
+  player.speed.y += gravity
+
+  --apply player motion
+  player.x += player.speed.x
+  player.y += player.speed.y
 
   --checking player position against screen bounds
   if player.x < 0 then
@@ -74,6 +86,7 @@ function _update()
   end
   if player.y + player.height > screen.height then
     player.y = screen.height - player.height
+	player.speed.y = 0
   end
 end
 
