@@ -17,23 +17,25 @@ function move()
   player.moving = true
 end
 
+function animate_move()
+  player.step += 1
+  if(player.step % 6 == 0) player.sprite += 2
+  if(player.sprite > 2) player.sprite = 0
+end
+
 function _update()
   player.moving = false
 
   if btn(0) then
     direction = 0
 	player.x -= player.speed
-	player.step += 1
-    if(player.step % 6 == 0) player.sprite += 2
-	if(player.sprite > 2) player.sprite = 0
+    animate_move()
 	move()
   end
   if btn(1) then
     direction = 1
 	player.x += player.speed
-	player.step += 1
-	if(player.step % 6 == 0) player.sprite += 2
-	if(player.sprite > 2) player.sprite = 0
+    animate_move()
 	move()
   end
   if btn(2) then
