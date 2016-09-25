@@ -9,7 +9,7 @@ player.x = 5
 player.y = 5
 player.sprite = 0
 player.step = 0
-direction = 1
+player.direction = 1
 player.speed = 2
 player.moving = false
 
@@ -27,13 +27,13 @@ function _update()
   player.moving = false
 
   if btn(0) then
-    direction = 0
+    player.direction = 0
 	player.x -= player.speed
     animate_move()
 	move()
   end
   if btn(1) then
-    direction = 1
+    player.direction = 1
 	player.x += player.speed
     animate_move()
 	move()
@@ -59,7 +59,7 @@ end
 
 function _draw()
   cls()
-  spr(player.sprite, player.x, player.y, 2, 2, (direction==0))
+  spr(player.sprite, player.x, player.y, 2, 2, (player.direction==0))
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000004400000000000000000000000000000000000000000000000000000000000000000000000
