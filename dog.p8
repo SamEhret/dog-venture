@@ -78,10 +78,12 @@ player.speed = {}
 player.speed.x = 0
 player.speed.y = 0
 player.moving = false
+player.stopped = true
 player.dead = false
 
 function move()
   player.moving = true
+  player.stopped = false
 end
 
 function animate_move()
@@ -92,6 +94,7 @@ end
 
 function _update()
   player.moving = false
+  player.stopped = true
   if not player.dead then
     camerax += 1
     if camerax < 0 then
@@ -100,7 +103,7 @@ function _update()
 
     if btn(0) then
       player.direction = 0
-	     player.speed.x -= player.acceleration
+	    player.speed.x -= player.acceleration
       animate_move()
      	move()
     end
@@ -115,18 +118,21 @@ function _update()
       player.speed.y = player.jump * -1
      	player.step = 0
       player.sprite = 6
-	     move()
+	    player.stopped = false
     end
     if btn(3) then
       player.speed.y += player.acceleration
       player.step = 0
       player.sprite = 8
-      move()
+      player.stopped = false
     end
 	
-    if not player.moving then
+    if player.stopped then
       player.step = 0
       player.sprite = 4
+    end
+
+    if not player.moving then
       player.x -= 1
     end
   end
