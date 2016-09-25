@@ -65,7 +65,7 @@ tree_bg.paralax = 4
 player = {}
 player.width = 16
 player.height = 16
-player.x = 0
+player.x = (screen.width / 2) - (player.width / 2)
 player.y = screen.height - player.height
 player.sprite = 0
 player.step = 0
@@ -78,6 +78,7 @@ player.speed = {}
 player.speed.x = 0
 player.speed.y = 0
 player.moving = false
+player.dead = false
 
 function move()
   player.moving = true
@@ -91,42 +92,44 @@ end
 
 function _update()
   player.moving = false
-  camerax += 1
-  if camerax < 0 then
-    camerax = 0
-  end
+  if not player.dead then
+    camerax += 1
+    if camerax < 0 then
+      camerax = 0
+    end
 
-  if btn(0) then
-    player.direction = 0
-	player.speed.x -= player.acceleration
-    animate_move()
-	move()
-  end
-  if btn(1) then
-    player.direction = 1
-	player.speed.x += player.acceleration
-    animate_move()
-	move()
-  end
-  if btn(2) and not player.airborn then
-    player.airborn = true
-    player.speed.y = player.jump * -1
-	player.step = 0
-    player.sprite = 6
-	move()
-  end
-  if btn(3) then
-    player.speed.y += player.acceleration
-    player.step = 0
-    player.sprite = 8
-	move()
-  end
+    if btn(0) then
+      player.direction = 0
+	     player.speed.x -= player.acceleration
+      animate_move()
+     	move()
+    end
+    if btn(1) then
+      player.direction = 1
+     	player.speed.x += player.acceleration
+      animate_move()
+     	move()
+    end
+    if btn(2) and not player.airborn then
+      player.airborn = true
+      player.speed.y = player.jump * -1
+     	player.step = 0
+      player.sprite = 6
+	     move()
+    end
+    if btn(3) then
+      player.speed.y += player.acceleration
+      player.step = 0
+      player.sprite = 8
+      move()
+    end
 	
-  if not player.moving then
-    player.step = 0
-    player.sprite = 4
+    if not player.moving then
+      player.step = 0
+      player.sprite = 4
+      player.x -= 1
+    end
   end
-
   --apply gravity
   player.speed.y += gravity
 
@@ -148,9 +151,11 @@ function _update()
   --checking player position against screen bounds
   if player.x < 0 then
     player.x = 0
+    player.dead = true
   end
   if player.x + player.width > screen.width then
     player.x = screen.width - player.width
+    player.dead = true
   end
   if player.y < 0 then
     player.y = 0
