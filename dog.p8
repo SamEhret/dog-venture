@@ -15,26 +15,6 @@ player.moving = false
 
 function move()
   player.moving = true
-	
-  if btn(0) then
-    player.step += 1
-    if(player.step%6==0) player.sprite+=2
-	if(player.sprite>2) player.sprite=0
-  end
-	
-  if btn(1) then
-    player.step += 1
-	if(player.step%6==0) player.sprite+=2
-	if(player.sprite>2) player.sprite=0
-  end
-	
-  if btn(2) then
-    player.sprite = 6
-  end
-	
-  if btn(3) then
-    player.sprite = 8
-  end
 end
 
 function _update()
@@ -43,23 +23,34 @@ function _update()
   if btn(0) then
     direction = 0
 	player.x -= player.speed
+	player.step += 1
+    if(player.step % 6 == 0) player.sprite += 2
+	if(player.sprite > 2) player.sprite = 0
 	move()
   end
   if btn(1) then
     direction = 1
 	player.x += player.speed
+	player.step += 1
+	if(player.step % 6 == 0) player.sprite += 2
+	if(player.sprite > 2) player.sprite = 0
 	move()
   end
   if btn(2) then
     player.y -= player.speed
+	player.step = 0
+    player.sprite = 6
 	move()
   end
   if btn(3) then
     player.y += player.speed
+    player.step = 0
+    player.sprite = 8
 	move()
   end
 	
   if not player.moving then
+    player.step = 0
     player.sprite = 4
   end
 end
