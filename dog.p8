@@ -8,6 +8,7 @@ gravity = 9.81 / 30
 friction = 5
 camerax = 0
 world_floor_height = 110
+game_running = false
 
 screen = {}
 screen.width = 128
@@ -66,7 +67,7 @@ player = {}
 player.width = 16
 player.height = 16
 player.x = (screen.width / 2) - (player.width / 2)
-player.y = screen.height - player.height
+player.y = world_floor_height - player.height
 player.sprite = 0
 player.step = 0
 player.direction = 1
@@ -93,88 +94,94 @@ function animate_move()
 end
 
 function _update()
-  player.moving = false
-  player.stopped = true
-  if not player.dead then
-    camerax += 1
-    if camerax < 0 then
-      camerax = 0
+  if not game_running then
+    if btn(4) or btn(5) then
+      game_running = true
     end
+  else
+    player.moving = false
+    player.stopped = true
+    if not player.dead then
+      camerax += 1
+      if camerax < 0 then
+        camerax = 0
+      end
 
-    if btn(0) then
-      player.direction = 0
-	    player.speed.x -= player.acceleration
-      animate_move()
-     	move()
-    end
-    if btn(1) then
-      player.direction = 1
-     	player.speed.x += player.acceleration
-      animate_move()
-     	move()
-    end
-    if btn(2) and not player.airborn then
-      player.airborn = true
-      player.speed.y = player.jump * -1
-     	player.step = 0
-      player.sprite = 6
-	    player.stopped = false
-    end
-    if btn(3) then
-      player.speed.y += player.acceleration
-      player.step = 0
-      player.sprite = 8
-      player.stopped = false
-    end
+      if btn(0) then
+        player.direction = 0
+	      player.speed.x -= player.acceleration
+        animate_move()
+     	  move()
+      end
+      if btn(1) then
+        player.direction = 1
+     	  player.speed.x += player.acceleration
+        animate_move()
+       	move()
+      end
+      if btn(2) and not player.airborn then
+        player.airborn = true
+        player.speed.y = player.jump * -1
+     	  player.step = 0
+        player.sprite = 6
+	      player.stopped = false
+      end
+      if btn(3) then
+        player.speed.y += player.acceleration
+        player.step = 0
+        player.sprite = 8
+        player.stopped = false
+      end
 	
-    if player.stopped then
-      player.step = 0
-      player.sprite = 4
+      if player.stopped then
+        player.step = 0
+        player.sprite = 4
+      end
+
+      if not player.moving then
+        player.x -= 1
+      end
+    end
+    --apply gravity
+    player.speed.y += gravity
+
+    --apply friction
+    if not player.airborn and not btn(0) and not btn(1) then
+     player.speed.x /= friction
     end
 
-    if not player.moving then
-      player.x -= 1
+    --apply player motion
+    if player.speed.x > player.max_speed then
+      player.speed.x = player.max_speed
     end
-  end
-  --apply gravity
-  player.speed.y += gravity
+    if player.speed.x < player.max_speed * -1 then
+      player.speed.x = player.max_speed * -1
+    end
+    player.x += player.speed.x
+    player.y += player.speed.y
 
-  --apply friction
-  if not player.airborn and not btn(0) and not btn(1) then
-   player.speed.x /= friction
-  end
+    --checking player position against screen bounds
+    if player.x < 0 then
+      player.x = 0
+      player.dead = true
+    end
+    if player.x + player.width > screen.width then
+      player.x = screen.width - player.width
+      player.dead = true
+    end
+    if player.y < 0 then
+      player.y = 0
+    end
+    if player.y + player.height > world_floor_height then
+      player.y = world_floor_height - player.height
+	    player.speed.y = 0
+	    player.airborn = false
+    end
 
-  --apply player motion
-  if player.speed.x > player.max_speed then
-    player.speed.x = player.max_speed
-  end
-  if player.speed.x < player.max_speed * -1 then
-    player.speed.x = player.max_speed * -1
-  end
-  player.x += player.speed.x
-  player.y += player.speed.y
-
-  --checking player position against screen bounds
-  if player.x < 0 then
-    player.x = 0
-    player.dead = true
-  end
-  if player.x + player.width > screen.width then
-    player.x = screen.width - player.width
-    player.dead = true
-  end
-  if player.y < 0 then
-    player.y = 0
-  end
-  if player.y + player.height > world_floor_height then
-    player.y = world_floor_height - player.height
-	player.speed.y = 0
-	player.airborn = false
-  end
-
-  --jump animation
-  if player.airborn == true then
-    player.sprite = 6
+    --jump animation
+    if player.airborn == true then
+      player.sprite = 6
+    end
   end
 end
 
@@ -194,31 +201,49 @@ function draw_map_loop(map_obj, y)
 end
 
 function _draw()
-  cls()
-  draw_map(world_bg, 0, 0)
+  if not game_running then
+    cls()
+    draw_map(world_bg, 0, 0)
+    mountain_draw_height = (screen.height / 2) - mountain_bg.pixel_height
+    draw_map_loop(mountain_bg, mountain_draw_height)
+    hill_draw_height = 40
+    draw_map_loop(hill_bg, hill_draw_height)
+    forest_draw_height = 50
+    draw_map_loop(forest_bg, forest_draw_height)
+    tree_draw_height = 60
+    draw_map_loop(tree_bg, tree_draw_height) 
+    palt(0, false)
+    palt(10, true)
+    spr(player.sprite, player.x, player.y, 2, 2)
+    palt(0, true)
+    palt(10, false)
+  else 
+    cls()
+    draw_map(world_bg, 0, 0)
 
-  camera(paralax(camerax, mountain_bg.pixel_width, mountain_bg.paralax), 0)
-  mountain_draw_height = (screen.height / 2) - mountain_bg.pixel_height
-  draw_map_loop(mountain_bg, mountain_draw_height)
+    camera(paralax(camerax, mountain_bg.pixel_width, mountain_bg.paralax), 0)
+    mountain_draw_height = (screen.height / 2) - mountain_bg.pixel_height
+    draw_map_loop(mountain_bg, mountain_draw_height)
   
-  camera(paralax(camerax, hill_bg.pixel_width, hill_bg.paralax), 0)
-  hill_draw_height = 40
-  draw_map_loop(hill_bg, hill_draw_height)
+    camera(paralax(camerax, hill_bg.pixel_width, hill_bg.paralax), 0)
+    hill_draw_height = 40
+    draw_map_loop(hill_bg, hill_draw_height)
   
-  camera(paralax(camerax, forest_bg.pixel_width, forest_bg.paralax), 0)
-  forest_draw_height = 50
-  draw_map_loop(forest_bg, forest_draw_height)
+    camera(paralax(camerax, forest_bg.pixel_width, forest_bg.paralax), 0)
+    forest_draw_height = 50
+    draw_map_loop(forest_bg, forest_draw_height)
    
-  camera(paralax(camerax, tree_bg.pixel_width, tree_bg.paralax), 0)
-  tree_draw_height = 60
-  draw_map_loop(tree_bg, tree_draw_height) 
+    camera(paralax(camerax, tree_bg.pixel_width, tree_bg.paralax), 0)
+    tree_draw_height = 60
+    draw_map_loop(tree_bg, tree_draw_height) 
    
-  camera()
-  palt(0, false)
-  palt(10, true)
-  spr(player.sprite, player.x, player.y, 2, 2, (player.direction==0))
-  palt(0, true)
-  palt(10, false)
+    camera()
+    palt(0, false)
+    palt(10, true)
+    spr(player.sprite, player.x, player.y, 2, 2, (player.direction==0))
+    palt(0, true)
+    palt(10, false)
+  end
 end
 __gfx__
 aaaaaaa00000aaaaaaaaaaa00000aaaaaaaaaaa00000aaaaaaaaaaa0000aaaaaaaaaaaaaaaaaaaaa000000000000000000000000000000000000000000000000
