@@ -128,21 +128,13 @@ function _update()
     music_started = true
     music(0)
   end
-  if game_score == 25 then
-    music(-1)
-    music(1)
-  end
-  if game_score == 50 then
+  if game_score == 1 then
     music(-1)
     music(2)
   end
-  if game_score == 75 then
+  if game_score == 99 then
     music(-1)
-    music(3)
-  end
-  if game_score == 90 then
-    music(-1)
-    music(4)
+    music(1)
   end
 
   if not game_running then
@@ -162,7 +154,7 @@ function _update()
     player.moving = false
     player.stopped = true
     score_count += 1
-    if score_count > 30 then
+    if score_count > 1 then
       score_count = 0
       game_score += 1
     end
