@@ -15,6 +15,8 @@ function _init()
   title_tick = 0
   title_action_color = 0
   frame_count = 0
+  game_score = 0
+  score_count = 0
 
   screen = {}
   screen.width = 128
@@ -132,6 +134,11 @@ function _update()
   else
     player.moving = false
     player.stopped = true
+    score_count += 1
+    if score_count > 30 then
+      score_count = 0
+      game_score += 1
+    end
     if not player.dead then
       camerax += 1
       if camerax < 0 then
@@ -312,6 +319,8 @@ function _draw()
     spr(player.sprite, player.x, player.y, 2, 2, (player.direction==0))
     palt(0, true)
     palt(10, false)
+
+    print('score: '..game_score, 5, 5, 0)
   end
 end
 __gfx__
