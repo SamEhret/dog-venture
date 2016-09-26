@@ -154,7 +154,7 @@ function _update()
     player.moving = false
     player.stopped = true
     score_count += 1
-    if score_count > 1 then
+    if score_count > 30 then
       score_count = 0
       game_score += 1
     end
