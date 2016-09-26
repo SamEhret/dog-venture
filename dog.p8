@@ -14,6 +14,7 @@ function _init()
   draw_title = true
   title_tick = 0
   title_action_color = 0
+  frame_count = 0
 
   screen = {}
   screen.width = 128
@@ -102,6 +103,7 @@ function _init()
   player.moving = false
   player.stopped = true
   player.dead = false
+  player.barking = false
 end
 
 music(0)
@@ -170,12 +172,9 @@ function _update()
       end
 	
       if btnp(5) then
-        player.stopped = false
+        player.barking = true
+        player.stopped = false  
         sfx(0)
-      end
-
-      if btn(5) then
-        player.sprite = 12
       end
 
       if player.stopped then
@@ -185,6 +184,15 @@ function _update()
 
       if not player.moving then
         player.x -= 1
+      end
+
+      if player.barking == true then
+        player.sprite = 12
+        frame_count += 1
+        if frame_count > 8 then
+          frame_count = 0
+          player.barking = false
+        end
       end
     end
     --apply gravity
