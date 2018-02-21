@@ -1,7 +1,7 @@
 # dog-venture
 WIP of an adventure dog who will dodge obstacles, collect items, and bark!!
 
-# Updates will be in Dog-Venture_2.0
+# Updates will be in Dog-Venture-2.0
 https://github.com/squiggers/Dog-Venture-2.0
 
 # demo
